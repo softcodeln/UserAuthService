@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: UserAuthService
+  datasource:
+    url: jdbc:mysql://localhost:3306/user_auth_service
+    username: myuser
+    password: secret
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
