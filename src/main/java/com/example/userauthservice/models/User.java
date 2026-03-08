@@ -27,6 +27,7 @@ public class User extends BaseModel{
                 .name(this.name)
                 .email(this.email)
                 .id(this.getPublicId())
+                .roles(this.roles)
                 .build();
         // 🙂 we have used Builder design pattern to create UserDto object, we can also use constructor to create UserDto object.
     }

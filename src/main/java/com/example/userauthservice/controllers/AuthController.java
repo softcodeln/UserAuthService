@@ -3,9 +3,12 @@ package com.example.userauthservice.controllers;
 import com.example.userauthservice.dtos.LoginRequestDto;
 import com.example.userauthservice.dtos.SignUpRequestDto;
 import com.example.userauthservice.dtos.UserDto;
+import com.example.userauthservice.dtos.ValidateToken;
 import com.example.userauthservice.models.User;
+import com.example.userauthservice.pojos.LoginResponse;
 import com.example.userauthservice.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,7 +82,18 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<UserDto> login(@RequestBody LoginRequestDto loginRequestDto) {
-        User user = authService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
-        return ResponseEntity.ok(user.getUserDto());
+        LoginResponse loginResponse = authService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", loginResponse.getToken());
+        return new ResponseEntity<>(loginResponse.getUser().getUserDto(), headers,HttpStatus.CREATED);
+    }
+    @PostMapping("/validate")
+    public ResponseEntity<String> validateToken(@RequestBody ValidateToken tokenDto) {
+        boolean isValid = authService.validateToken(tokenDto.getToken());
+        if (isValid) {
+            return new ResponseEntity<>("Token is valid", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Token is invalid", HttpStatus.UNAUTHORIZED);
+        }
     }
 }
